@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Category";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="get" asp-controller="Product" asp-action="Category">
+    <label>Enter category name:</label>
+    <input type="text" name="name" />
+    <button type="submit">Show</button>
+</form>
+
+@if(!string.IsNullOrEmpty(ViewBag.CategoryName))
+{
+    <p>Category = @ViewBag.CategoryName</p>
+}

@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Product Detail";
+}
+
+<h2>@ViewData["Category"]</h2>
+
+@if(ViewBag.ProductId != null)
+{
+    <p>Product ID = @ViewBag.ProductId</p>
+}
+else
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
