@@ -1,0 +1,61 @@
+﻿@model List<MVCTemplate005.Models.Book>
+
+@{
+    ViewData["Title"] = "Danh sách sách";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Danh Sách Sách</h2>
+        
+        <div class="d-flex gap-2">
+            <div class="input-group" style="max-width: 220px;">
+                <input type="number" id="bookIdInput" class="form-control" placeholder="Nhập ID sách..." min="1" />
+                <button onclick="goToDetail()" class="btn btn-info text-white" type="button"> Xem Chi Tiet</button>
+            </div>
+
+            <a asp-controller="Book" asp-action="Create" class="btn btn-success"> Them Sach Moi</a>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Id</th>
+                <th>Ten Sach</th>
+                <th>Gia</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var book in Model)
+                {
+                    <tr>
+                        <td>@book.id</td>
+                        <td>@book.name</td>
+                        <td>@book.price</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center">Không có cuốn sách nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function goToDetail() {
+        var id = document.getElementById("bookIdInput").value;
+        if (!id) {
+            alert("Vui lòng nhập ID cuốn sách muốn xem!");
+            return;
+        }
+        // Điều hướng trình duyệt thẳng tới URL: /Book/Detail/{id}
+        window.location.href = "/Book/Detail/" + id;
+    }
+</script>

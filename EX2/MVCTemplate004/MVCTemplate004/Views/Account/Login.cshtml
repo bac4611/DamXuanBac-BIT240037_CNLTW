@@ -1,0 +1,28 @@
+﻿@model MVCTemplate004.Models.Account;
+
+@{
+    ViewData["Title"] = "";
+}
+
+<div class="container mt-5" style="max-width: 400px;">
+    <h2 class="text-center mb-4">Đăng Nhập</h2>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-@ViewBag.Status" role="alert">
+            @ViewBag.Message
+        </div>
+    }
+
+    <form asp-controller="Account" asp-action="Login" method="post">
+        <div class="mb-3">
+            <label asp-for="Username" class="form-label">Username</label>
+            <input asp-for="Username" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" type="password" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+</div>

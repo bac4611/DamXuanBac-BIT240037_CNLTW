@@ -1,0 +1,28 @@
+﻿@model MVCTemplate005.Models.Book
+
+@{
+    ViewData["Title"] = "Chi tiết sách";
+}
+
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h3 class="card-title text-center mb-3">Chi tiet sach</h3>
+        </div>
+        <div class="card-body">
+            @if (Model != null)
+            {
+                <p><strong> (Id):</strong> @Model.id</p>
+                <p><strong>Ten sach:</strong> @Model.name</p>
+                <p><strong>Gia tien:</strong> <span class="text-danger fw-bold">$@Model.price</span></p>
+            }
+            else
+            {
+                <p class="text-center text-muted">ko tim thay thong tin sach.</p>
+            }
+        </div>
+        <div class="card-footer text-center">
+            <a asp-controller="Book" asp-action="Index" class="btn btn-secondary">quay lai</a>
+        </div>
+    </div>
+</div>
