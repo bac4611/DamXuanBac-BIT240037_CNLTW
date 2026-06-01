@@ -1,7 +1,7 @@
 ## Luồng hoạt động của chương trình
 
 Dự án được xây dựng theo mô hình MVC gồm ba thành phần chính: Model, View và Controller. Người dùng thao tác trên giao diện View, yêu cầu sẽ được gửi đến Controller để xử lý. Controller có nhiệm vụ nhận request, xử lý dữ liệu thông qua Model nếu cần, sau đó trả kết quả về View để hiển thị cho người dùng.
-
+1
 ### 1. Luồng trang chủ
 
 Khi người dùng truy cập vào website, hệ thống sẽ gọi đến `HomeController`.
