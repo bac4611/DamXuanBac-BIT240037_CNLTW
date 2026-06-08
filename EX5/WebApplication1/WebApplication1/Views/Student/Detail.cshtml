@@ -1,0 +1,36 @@
+﻿@model WebApplication1.Models.Student
+
+@{
+    ViewData["Title"] = "Chi tiết sinh viên";
+}
+
+<h2>Chi tiết sinh viên</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <td>@Model.Id</td>
+    </tr>
+
+    <tr>
+        <th>Họ tên</th>
+        <td>@Model.Name</td>
+    </tr>
+
+    <tr>
+        <th>Email</th>
+        <td>@Model.Email</td>
+    </tr>
+
+    <tr>
+        <th>Lớp</th>
+        <td>@Model.ClassName</td>
+    </tr>
+
+    <tr>
+        <th>Điểm</th>
+        <td>@Model.Score</td>
+    </tr>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a>

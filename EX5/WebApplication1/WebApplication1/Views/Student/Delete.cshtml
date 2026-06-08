@@ -1,0 +1,43 @@
+﻿@model WebApplication1.Models.Student
+
+@{
+    ViewData["Title"] = "Xóa sinh viên";
+}
+
+<h2>Xóa sinh viên</h2>
+
+<h4>Bạn có chắc chắn muốn xóa sinh viên này không?</h4>
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <td>@Model.Id</td>
+    </tr>
+
+    <tr>
+        <th>Họ tên</th>
+        <td>@Model.Name</td>
+    </tr>
+
+    <tr>
+        <th>Email</th>
+        <td>@Model.Email</td>
+    </tr>
+
+    <tr>
+        <th>Lớp</th>
+        <td>@Model.ClassName</td>
+    </tr>
+
+    <tr>
+        <th>Điểm</th>
+        <td>@Model.Score</td>
+    </tr>
+</table>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

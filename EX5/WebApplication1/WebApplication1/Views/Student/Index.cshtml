@@ -1,0 +1,40 @@
+﻿@model List<WebApplication1.Models.Student>
+
+@{
+    ViewData["Title"] = "Danh sách sinh viên";
+}
+
+<h2>Danh sách sinh viên</h2>
+
+<a asp-action="Create" class="btn btn-primary">Thêm sinh viên</a>
+
+<table class="table table-bordered mt-3">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Họ tên</th>
+        <th>Email</th>
+        <th>Lớp</th>
+        <th>Điểm</th>
+        <th>Chức năng</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var student in Model)
+    {
+        <tr>
+            <td>@student.Id</td>
+            <td>@student.Name</td>
+            <td>@student.Email</td>
+            <td>@student.ClassName</td>
+            <td>@student.Score</td>
+            <td>
+                <a asp-action="Detail" asp-route-id="@student.Id" class="btn btn-info">Chi tiết</a>
+                <a asp-action="Edit" asp-route-id="@student.Id" class="btn btn-warning">Sửa</a>
+                <a asp-action="Delete" asp-route-id="@student.Id" class="btn btn-danger">Xóa</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
