@@ -1,166 +1,311 @@
-## Luồng hoạt động của chương trình
+# Ứng dụng quản lý sinh viên ASP.NET MVC
 
-Dự án được xây dựng theo mô hình MVC gồm ba thành phần chính: Model, View và Controller. Người dùng thao tác trên giao diện View, yêu cầu sẽ được gửi đến Controller để xử lý. Controller có nhiệm vụ nhận request, xử lý dữ liệu thông qua Model nếu cần, sau đó trả kết quả về View để hiển thị cho người dùng.
-1
-### 1. Luồng trang chủ
+## 1. Giới thiệu
 
-Khi người dùng truy cập vào website, hệ thống sẽ gọi đến `HomeController`.
+Đây là ứng dụng web ASP.NET MVC đơn giản dùng để quản lý thông tin sinh viên. Ứng dụng được xây dựng theo mô hình MVC gồm Model, View và Controller. Dữ liệu sinh viên được lưu tạm bằng `List<Student>` trong chương trình, chưa sử dụng cơ sở dữ liệu.
 
-* Người dùng truy cập trang chủ.
-* Request được gửi đến action `Index`.
-* Action `Index` trả về View tương ứng.
-* Giao diện trang chủ được hiển thị cho người dùng.
+Ứng dụng có các chức năng chính:
 
-Ngoài ra, người dùng có thể truy cập trang `Privacy`. Khi có lỗi xảy ra trong hệ thống, action `Error` sẽ được sử dụng để hiển thị thông tin lỗi.
+* Hiển thị danh sách sinh viên
+* Thêm sinh viên mới
+* Sửa thông tin sinh viên
+* Xóa sinh viên
+* Xem chi tiết sinh viên
+* Kiểm tra dữ liệu nhập bằng validation
+* Sử dụng Layout chung cho các trang
 
-### 2. Luồng đăng nhập
+---
 
-Chức năng đăng nhập được xử lý bởi `AccountController`.
+## 2. Cấu trúc project
 
-Khi người dùng mở trang đăng nhập:
+Project được chia thành các phần chính:
 
-* Người dùng truy cập đường dẫn `/Account/Login`.
-* Phương thức `Login` với `[HttpGet]` được gọi.
-* Controller trả về giao diện form đăng nhập.
-* Người dùng nhập tên đăng nhập và mật khẩu.
+```text
+Controllers
+    StudentController.cs
 
-Khi người dùng bấm nút đăng nhập:
+Models
+    Student.cs
 
-* Form gửi dữ liệu lên server bằng phương thức POST.
-* Phương thức `Login` với `[HttpPost]` được gọi.
-* Hệ thống kiểm tra tên đăng nhập và mật khẩu.
-* Nếu người dùng bỏ trống tên đăng nhập hoặc mật khẩu, hệ thống hiển thị thông báo lỗi.
-* Nếu người dùng nhập đầy đủ thông tin, hệ thống hiển thị thông báo đăng nhập thành công.
+Views
+    Student
+        Index.cshtml
+        Create.cshtml
+        Edit.cshtml
+        Detail.cshtml
+        Delete.cshtml
 
-Chức năng đăng nhập hiện tại chỉ kiểm tra dữ liệu nhập vào có đầy đủ hay không, chưa thực hiện xác thực tài khoản bằng cơ sở dữ liệu.
+    Shared
+        _Layout.cshtml
+```
 
-### 3. Luồng hiển thị danh sách sách
+Trong đó:
 
-Chức năng quản lý sách được xử lý bởi `BookController`.
+* `Models/Student.cs`: định nghĩa đối tượng sinh viên.
+* `Controllers/StudentController.cs`: xử lý các request từ người dùng.
+* `Views/Student`: chứa các giao diện hiển thị dữ liệu sinh viên.
+* `Views/Shared/_Layout.cshtml`: layout dùng chung cho toàn bộ trang web.
 
-Khi người dùng truy cập danh sách sách:
+---
 
-* Người dùng truy cập đường dẫn `/Book/Index`.
-* Action `Index` trong `BookController` được gọi.
-* Controller lấy danh sách sách từ biến `static List<Book>`.
-* Danh sách sách được truyền sang View.
-* View hiển thị danh sách sách gồm mã sách, tên sách và giá sách.
+## 3. Luồng xử lý chung của mô hình MVC
 
-Dữ liệu sách hiện đang được lưu tạm trong bộ nhớ bằng `static List<Book>`, chưa sử dụng database.
+Luồng xử lý trong ứng dụng MVC diễn ra như sau:
 
-### 4. Luồng xem chi tiết sách
+```text
+Người dùng gửi request
+        ↓
+Routing xác định Controller và Action cần gọi
+        ↓
+Controller xử lý request
+        ↓
+Controller làm việc với Model hoặc dữ liệu trong List
+        ↓
+Controller trả dữ liệu sang View
+        ↓
+View dùng Razor để hiển thị HTML cho người dùng
+```
 
-Khi người dùng muốn xem thông tin chi tiết của một cuốn sách:
+Ví dụ khi người dùng truy cập trang danh sách sinh viên:
 
-* Người dùng chọn một sách trong danh sách.
-* Hệ thống gửi request đến đường dẫn `/Book/Detail/{id}`.
-* Action `Detail` nhận vào tham số `id`.
-* Controller tìm sách có `id` tương ứng trong danh sách.
-* Nếu tìm thấy sách, hệ thống trả về View chi tiết sách.
-* Nếu không tìm thấy sách, hệ thống trả về lỗi `NotFound`.
+```text
+Người dùng truy cập /Student/Index
+        ↓
+Routing gọi StudentController
+        ↓
+Action Index() được thực thi
+        ↓
+Controller lấy danh sách sinh viên từ List<Student>
+        ↓
+Controller truyền danh sách sang View Index.cshtml
+        ↓
+View hiển thị bảng danh sách sinh viên
+```
 
-Luồng này giúp người dùng xem thông tin cụ thể của từng cuốn sách trong hệ thống.
+---
 
-### 5. Luồng thêm sách mới
+## 4. Luồng chức năng hiển thị danh sách sinh viên
 
-Khi người dùng muốn thêm sách mới:
+Khi người dùng vào trang danh sách sinh viên, hệ thống sẽ gọi action `Index()` trong `StudentController`.
 
-* Người dùng truy cập đường dẫn `/Book/Create`.
-* Action `Create` với `[HttpGet]` được gọi.
-* Controller trả về giao diện form thêm sách.
-* Người dùng nhập tên sách và giá sách.
-* Người dùng bấm nút thêm sách.
-* Form gửi dữ liệu lên server bằng phương thức POST.
-* Action `Create` với `[HttpPost]` được gọi.
-* Controller kiểm tra dữ liệu bằng `ModelState.IsValid`.
+Luồng xử lý:
 
-Nếu dữ liệu không hợp lệ:
+```text
+GET /Student/Index
+        ↓
+Gọi action Index()
+        ↓
+Lấy toàn bộ dữ liệu sinh viên từ List<Student>
+        ↓
+return View(students)
+        ↓
+Index.cshtml nhận Model là danh sách sinh viên
+        ↓
+Dùng vòng lặp foreach để hiển thị dữ liệu ra bảng
+```
 
-* Hệ thống trả lại form thêm sách.
-* Các thông báo lỗi validation được hiển thị cho người dùng.
-* Người dùng sửa lại thông tin và gửi lại form.
+Chức năng này giúp người dùng xem toàn bộ sinh viên hiện có trong hệ thống.
 
+---
+
+## 5. Luồng chức năng xem chi tiết sinh viên
+
+Khi người dùng bấm nút "Chi tiết", hệ thống sẽ truyền `id` của sinh viên lên Controller.
+
+Luồng xử lý:
+
+```text
+GET /Student/Detail/{id}
+        ↓
+Gọi action Detail(int id)
+        ↓
+Tìm sinh viên trong List theo Id
+        ↓
+Nếu tìm thấy thì trả về View Detail.cshtml
+        ↓
+Nếu không tìm thấy thì trả về NotFound()
+```
+
+Trong action này, chương trình sử dụng `FirstOrDefault()` để tìm sinh viên có `Id` trùng với `id` được truyền vào.
+
+---
+
+## 6. Luồng chức năng thêm sinh viên
+
+Chức năng thêm sinh viên gồm 2 bước: hiển thị form và xử lý dữ liệu sau khi submit.
+
+### Bước 1: Hiển thị form thêm sinh viên
+
+```text
+GET /Student/Create
+        ↓
+Gọi action Create()
+        ↓
+return View()
+        ↓
+Hiển thị form thêm sinh viên
+```
+
+### Bước 2: Xử lý dữ liệu khi người dùng bấm lưu
+
+```text
+POST /Student/Create
+        ↓
+Gọi action Create(Student student)
+        ↓
+Kiểm tra ModelState.IsValid
+        ↓
 Nếu dữ liệu hợp lệ:
-
-* Controller tìm `id` lớn nhất hiện có trong danh sách sách.
-* Sách mới được gán `id` mới bằng `maxId + 1`.
-* Sách mới được thêm vào danh sách.
-* Hệ thống hiển thị thông báo thêm sách thành công.
-
-### 6. Luồng kiểm tra dữ liệu sách
-
-Model `Book` sử dụng Data Annotations để kiểm tra dữ liệu đầu vào.
-
-Các điều kiện kiểm tra gồm:
-
-* Tên sách không được để trống.
-* Giá sách không được để trống.
-* Giá sách phải lớn hơn 0.
-
-Khi người dùng nhập sai dữ liệu ở form thêm sách, hệ thống sẽ không thêm sách mới mà hiển thị thông báo lỗi để người dùng nhập lại.
-
-### 7. Tóm tắt luồng tổng quát
-
-Luồng hoạt động tổng quát của chương trình như sau:
-
-```text
-Người dùng thao tác trên giao diện
+        - Tạo Id mới cho sinh viên
+        - Thêm sinh viên vào List<Student>
+        - Redirect về trang Index
         ↓
-View gửi request đến Controller
-        ↓
-Controller nhận và xử lý request
-        ↓
-Controller làm việc với Model nếu cần
-        ↓
-Controller trả dữ liệu về View
-        ↓
-View hiển thị kết quả cho người dùng
+Nếu dữ liệu không hợp lệ:
+        - Trả lại View Create
+        - Hiển thị lỗi validation
 ```
 
-Đối với chức năng quản lý sách:
+`ModelState.IsValid` dùng để kiểm tra dữ liệu người dùng nhập có thỏa mãn các điều kiện validation trong Model hay không.
+
+Ví dụ:
+
+* Tên sinh viên không được để trống
+* Email phải đúng định dạng
+* Lớp không được để trống
+* Điểm phải nằm trong khoảng từ 0 đến 10
+
+---
+
+## 7. Luồng chức năng sửa sinh viên
+
+Chức năng sửa sinh viên cũng gồm 2 bước: hiển thị form sửa và cập nhật dữ liệu.
+
+### Bước 1: Hiển thị form sửa
 
 ```text
-Người dùng vào trang danh sách sách
+GET /Student/Edit/{id}
         ↓
-BookController gọi action Index
+Gọi action Edit(int id)
         ↓
-Lấy danh sách sách từ List<Book>
+Tìm sinh viên theo Id
         ↓
-Trả dữ liệu sang View
+Nếu tìm thấy thì truyền sinh viên sang View Edit.cshtml
         ↓
-Hiển thị danh sách sách
+View hiển thị form có sẵn dữ liệu cũ
 ```
 
-Đối với chức năng thêm sách:
+### Bước 2: Cập nhật dữ liệu sau khi submit
 
 ```text
-Người dùng mở form thêm sách
+POST /Student/Edit
         ↓
-Nhập tên sách và giá sách
+Gọi action Edit(Student student)
         ↓
-Gửi form lên BookController
+Kiểm tra ModelState.IsValid
         ↓
-Kiểm tra dữ liệu bằng ModelState
+Tìm sinh viên cũ trong List theo Id
         ↓
-Nếu sai thì hiển thị lỗi
+Cập nhật lại Name, Email, ClassName, Score
         ↓
-Nếu đúng thì thêm sách vào danh sách
-        ↓
-Hiển thị thông báo thành công
+Redirect về trang Index
 ```
 
-Đối với chức năng đăng nhập:
+Nếu dữ liệu nhập không hợp lệ, hệ thống sẽ trả lại View Edit để người dùng sửa lỗi.
+
+---
+
+## 8. Luồng chức năng xóa sinh viên
+
+Chức năng xóa gồm 2 bước: hiển thị màn hình xác nhận và xử lý xóa.
+
+### Bước 1: Hiển thị trang xác nhận xóa
 
 ```text
-Người dùng mở form đăng nhập
+GET /Student/Delete/{id}
         ↓
-Nhập tên đăng nhập và mật khẩu
+Gọi action Delete(int id)
         ↓
-Gửi form lên AccountController
+Tìm sinh viên theo Id
         ↓
-Kiểm tra dữ liệu nhập vào
+Nếu tìm thấy thì truyền sinh viên sang View Delete.cshtml
         ↓
-Nếu thiếu thông tin thì báo lỗi
-        ↓
-Nếu nhập đầy đủ thì báo đăng nhập thành công
+Hiển thị thông tin sinh viên và hỏi người dùng có chắc chắn muốn xóa không
 ```
+
+### Bước 2: Xóa sinh viên
+
+```text
+POST /Student/DeleteConfirmed
+        ↓
+Gọi action DeleteConfirmed(int id)
+        ↓
+Tìm sinh viên theo Id
+        ↓
+Xóa sinh viên khỏi List<Student>
+        ↓
+Redirect về trang Index
+```
+
+Sau khi xóa thành công, người dùng được chuyển về trang danh sách sinh viên.
+
+---
+
+## 9. Vai trò của Layout
+
+File `_Layout.cshtml` được dùng để tạo giao diện chung cho toàn bộ website.
+
+Layout chứa các phần dùng chung như:
+
+* Thẻ HTML cơ bản
+* Navbar
+* Footer
+* Link CSS Bootstrap
+* Script JavaScript
+* Vị trí hiển thị nội dung chính
+
+Trong layout có đoạn:
+
+```cshtml
+@RenderBody()
+```
+
+Đây là vị trí để nội dung của từng View được hiển thị. Ví dụ khi mở `Index.cshtml`, nội dung của `Index.cshtml` sẽ được đưa vào vị trí `@RenderBody()` trong layout.
+
+Ngoài ra layout còn có:
+
+```cshtml
+@await RenderSectionAsync("Scripts", required: false)
+```
+
+Đoạn này cho phép từng View khai báo thêm script riêng nếu cần. Ví dụ các trang `Create.cshtml` và `Edit.cshtml` có thể dùng section này để thêm script validation.
+
+---
+
+## 10. Vai trò của Razor View Engine
+
+Razor View Engine cho phép viết code C# trực tiếp trong file `.cshtml`.
+
+Ví dụ trong trang danh sách sinh viên, Razor được dùng để duyệt danh sách sinh viên:
+
+```cshtml
+@foreach (var student in Model)
+{
+    <tr>
+        <td>@student.Id</td>
+        <td>@student.Name</td>
+        <td>@student.Email</td>
+        <td>@student.ClassName</td>
+        <td>@student.Score</td>
+    </tr>
+}
+```
+
+Nhờ Razor, View có thể hiển thị dữ liệu động được truyền từ Controller sang.
+
+---
+
+## 11. Kết luận
+
+Ứng dụng quản lý sinh viên đã áp dụng mô hình MVC để tách rõ trách nhiệm giữa Model, View và Controller. Controller xử lý request và điều phối dữ liệu, Model mô tả đối tượng sinh viên, còn View hiển thị giao diện cho người dùng.
+
+Ứng dụng đã hoàn thành các chức năng CRUD cơ bản gồm thêm, xem, sửa, xóa và hiển thị danh sách sinh viên. Dữ liệu được lưu tạm bằng `List<Student>`, phù hợp với yêu cầu bài tập chưa cần sử dụng database. Ngoài ra, ứng dụng còn sử dụng Razor View Engine, Layout dùng chung, `@RenderBody()`, `@RenderSection()` và validation cơ bản để kiểm tra dữ liệu nhập.
