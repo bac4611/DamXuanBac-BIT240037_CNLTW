@@ -1,0 +1,38 @@
+﻿@model btORM.Models.Book
+
+@{
+    ViewData["Title"] = "Sửa sách";
+}
+
+<h1>Sửa sách</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id"/>
+
+    <div class="mb-3">
+        <label asp-for="Title">Tên sách</label>
+        <input asp-for="Title" class="form-control"/>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Author">Tác giả</label>
+        <input asp-for="Author" class="form-control"/>
+        <span asp-validation-for="Author" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Price">Giá</label>
+        <input asp-for="Price" class="form-control"/>
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PublishYear">Năm xuất bản</label>
+        <input asp-for="PublishYear" class="form-control"/>
+        <span asp-validation-for="PublishYear" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Cập nhật</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>

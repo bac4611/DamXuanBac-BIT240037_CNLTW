@@ -1,0 +1,33 @@
+﻿@model btORM.Models.Book
+
+@{
+    ViewData["Title"] = "Chi tiết sách";
+}
+
+<h1>Chi tiết sách</h1>
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <td>@Model.Id</td>
+    </tr>
+    <tr>
+        <th>Tên sách</th>
+        <td>@Model.Title</td>
+    </tr>
+    <tr>
+        <th>Tác giả</th>
+        <td>@Model.Author</td>
+    </tr>
+    <tr>
+        <th>Giá</th>
+        <td>@Model.Price</td>
+    </tr>
+    <tr>
+        <th>Năm xuất bản</th>
+        <td>@Model.PublishYear</td>
+    </tr>
+</table>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a>
